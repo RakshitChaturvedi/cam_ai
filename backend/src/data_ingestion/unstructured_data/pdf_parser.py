@@ -5,6 +5,8 @@ import os
 from .document_profiles import DOCUMENT_KEYWORDS
 from .document_classifier import detect_document_type
 from .signal_extractor import extract_signals_from_chunk
+from .signal_aggregator import aggregate_signals
+from .signal_normalizer import normalize_signals
 
 def extract_text_from_pdf(pdf_path):
     """
@@ -50,17 +52,17 @@ def filter_relevant_pages(pages, doc_type):
         print("No keyword pages found")
         relevant_text = [p["text"] for p in pages[:10]]
 
-    return "\n".join(relevant_text)
+    return relevant_text
 
-def chunk_text(text):
+def chunk_text(text, max_chunks = 6):
     """
         Split text into chunks for LLM processing.
     """
-    chunk_size = len(text)//25
+    chunk_size = 4000
     chunks = []
     start = 0
     
-    while start < len(text):
+    while start < len(text) and len(chunks) < max_chunks:
         chunks.append(text[start:start+chunk_size])
         start+=chunk_size
 
@@ -84,24 +86,10 @@ def parse_pdf(pdf_path):
         except Exception as e:
             print("JSON parse failed: ", e)
     
-    print(results)
+    aggregated = aggregate_signals(results)
+    normalized = normalize_signals(aggregated, doc_type)
     
     return {
         "document_type": doc_type,
-        "signals": results
+        "signals": normalized
     }
-
-if __name__ == "__main__":
-    BASE_DIR = os.path.dirname(__file__)
-    test_pdf = os.path.join(BASE_DIR, "data", "sample_annual_report.pdf")
-
-    if os.path.exists(test_pdf):
-        result = parse_pdf(test_pdf)
-        print("Document Type:", result["document_type"])
-        print("\nExtracted Signals:\n")
-
-        for r in result["signals"]:
-            print(r)
-    else:
-        print(f"Error: Please place a PDF at {test_pdf} to test.")
-        exit()
