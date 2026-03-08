@@ -1,4 +1,5 @@
 import pymupdf
+import json
 import os
 
 from .document_profiles import DOCUMENT_KEYWORDS
@@ -76,8 +77,14 @@ def parse_pdf(pdf_path):
 
     for chunk in chunks:
         signals = extract_signals_from_chunk(chunk, doc_type)
-        print("LLM Output:", signals)
-        results.append(signals)
+
+        try:
+            parsed = json.loads(signals)
+            results.append(parsed)
+        except Exception as e:
+            print("JSON parse failed: ", e)
+    
+    print(results)
     
     return {
         "document_type": doc_type,
