@@ -1,6 +1,7 @@
 import pymupdf
 import json
 import os
+import time
 
 from .document_profiles import DOCUMENT_KEYWORDS
 from .document_classifier import detect_document_type
@@ -79,6 +80,7 @@ def parse_pdf(pdf_path):
 
     for chunk in chunks:
         signals = extract_signals_from_chunk(chunk, doc_type)
+        time.sleep(0.5)
 
         try:
             parsed = json.loads(signals)

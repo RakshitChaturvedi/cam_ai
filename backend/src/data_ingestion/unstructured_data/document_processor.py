@@ -16,7 +16,7 @@ def process_documents(file_paths):
 
             if doc_type not in outputs:
                 outputs[doc_type] = []
-            outputs[doc_type].append(signals)
+            outputs[doc_type] = signals
         except Exception as e:
             print(f"Failed to process {path}: {e}")
         
