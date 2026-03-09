@@ -3,7 +3,7 @@ from data_ingestion.structured_data.document_processor_structured import process
 
 import json
 
-def main():
+def run_ingestion():
     unstructured_files = [
         "data/sample_annual_report.pdf",
         "data/sample_legal_notice.pdf",
@@ -76,6 +76,11 @@ def main():
         "unstructured_signals": unstructured_results,
         "structured_signals": structured_results
     }
+    
+    return crawler_payload, original_payload
+
+def main():
+    crawler_payload, original_payload = run_ingestion()
     
     print("\n--- PAYLOAD 1: WEB CRAWLER TRIGGER ---\n")
     print(json.dumps(crawler_payload, indent=2))
