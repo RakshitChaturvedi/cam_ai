@@ -1,0 +1,6 @@
+date,description,amount,type
+2024-01-10,NEFT from Company B,500000,CREDIT
+2024-01-12,NEFT from Company C,500000,CREDIT
+2024-01-15,NEFT from Company A,500000,CREDIT
+2024-01-18,Payment to Vendor D,300000,DEBIT
+2024-01-20,Customer Payment E,200000,CREDIT
