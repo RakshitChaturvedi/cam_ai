@@ -4,14 +4,13 @@ from data_ingestion.structured_data.document_processor_structured import process
 import json
 
 def main():
-    """
     unstructured_files = [
         "data/sample_annual_report.pdf",
         "data/sample_legal_notice.pdf",
         "data/sample_sanction_letter.pdf"
     ]
     unstructured_results = process_documents(unstructured_files)
-    """
+
     structured_files = {
         "gst":  "data/sample_gst.csv",
         "bank": "data/sample_bank.csv",
@@ -20,7 +19,7 @@ def main():
     structured_results = process_structured_documents(structured_files)
 
     final_result = {
-        "unstructured_signals": 0, #unstructured_results,
+        "unstructured_signals": unstructured_results,
         "structured_signals": structured_results
     }
     print("\n--- FINAL INGESTION OUTPUT ---\n")
