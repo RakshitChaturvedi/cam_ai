@@ -1,3 +1,5 @@
+import json
+
 def aggregate_signals(results):
 
     aggregated = {}
@@ -15,11 +17,20 @@ def aggregate_signals(results):
                 aggregated[key].extend(value)
             else:
                 aggregated[key].append(value)
-        
+                
     for key in aggregated:
-        try:
-            aggregated[key] = list(set(aggregated[key]))
-        except TypeError:
-            pass
-            
+        unique_items = []
+        seen = set()
+        for item in aggregated[key]:
+            if isinstance(item, dict):
+                item_str = json.dumps(item, sort_keys=True)
+                if item_str not in seen:
+                    seen.add(item_str)
+                    unique_items.append(item)
+            else:
+                if item not in seen:
+                    seen.add(item)
+                    unique_items.append(item)
+        aggregated[key] = unique_items
+        
     return aggregated

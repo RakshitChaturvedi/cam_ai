@@ -1,0 +1,232 @@
+Page 0 length: 141
+Page 1 length: 4263
+Page 2 length: 3087
+Page 3 length: 6399
+Page 4 length: 8370
+Page 5 length: 5665
+Page 6 length: 7633
+Page 7 length: 5777
+Page 8 length: 5489
+Page 9 length: 6800
+Page 10 length: 5215
+Page 11 length: 7464
+Page 12 length: 6948
+Page 13 length: 8319
+Page 14 length: 8434
+Page 15 length: 8606
+Page 16 length: 8757
+Page 17 length: 9085
+Page 18 length: 9498
+Page 19 length: 9697
+Page 20 length: 10410
+Page 21 length: 8493
+Page 22 length: 8869
+Page 23 length: 5847
+Page 24 length: 6416
+Page 25 length: 3761
+Page 26 length: 4222
+Page 27 length: 8314
+Page 28 length: 7907
+Page 29 length: 8602
+Page 30 length: 8315
+Page 31 length: 9172
+Page 32 length: 8271
+Page 33 length: 6586
+Page 34 length: 8450
+Page 35 length: 9470
+Page 36 length: 9104
+Page 37 length: 5224
+Page 38 length: 5457
+Page 39 length: 8603
+Page 40 length: 10912
+Page 41 length: 9804
+Page 42 length: 7944
+Page 43 length: 5539
+Page 44 length: 6898
+Page 45 length: 10451
+Page 46 length: 9969
+Page 47 length: 7623
+Page 48 length: 5386
+Page 49 length: 7748
+Page 50 length: 7956
+Page 51 length: 10109
+Page 52 length: 7058
+Page 53 length: 5442
+Page 54 length: 6947
+Page 55 length: 4856
+Page 56 length: 3041
+Page 57 length: 2732
+Page 58 length: 3821
+Page 59 length: 4237
+Page 60 length: 9767
+Page 61 length: 9170
+Page 62 length: 7461
+Page 63 length: 4538
+Page 64 length: 6374
+Page 65 length: 6198
+Page 66 length: 4894
+Page 67 length: 4463
+Page 68 length: 4618
+Page 69 length: 4092
+Page 70 length: 5492
+Page 71 length: 4459
+Page 72 length: 4375
+Page 73 length: 4057
+Page 74 length: 3693
+Page 75 length: 5487
+Page 76 length: 4641
+Page 77 length: 7460
+Page 78 length: 7481
+Page 79 length: 3808
+Page 80 length: 4655
+Page 81 length: 4379
+Page 82 length: 4560
+Page 83 length: 4297
+Page 84 length: 4380
+Page 85 length: 7231
+Page 86 length: 5782
+Page 87 length: 6209
+Page 88 length: 7077
+Page 89 length: 4256
+Page 90 length: 3500
+Page 91 length: 3333
+Page 92 length: 8682
+Page 93 length: 8590
+Page 94 length: 12079
+Page 95 length: 10254
+Page 96 length: 10134
+Page 97 length: 4258
+Page 98 length: 3341
+Page 99 length: 3391
+Page 100 length: 4714
+Page 101 length: 4624
+Page 102 length: 9580
+Page 103 length: 9662
+Page 104 length: 9507
+Page 105 length: 6382
+Page 106 length: 6334
+Page 107 length: 7094
+Page 108 length: 6422
+Page 109 length: 4647
+Page 110 length: 5016
+Page 111 length: 4579
+Page 112 length: 6031
+Page 113 length: 4663
+Page 114 length: 5126
+Page 115 length: 4855
+Page 116 length: 3539
+Page 117 length: 5731
+Page 118 length: 6014
+Page 119 length: 5044
+Page 120 length: 4375
+Page 121 length: 5099
+Page 122 length: 4958
+Page 123 length: 5290
+Page 124 length: 7532
+Page 125 length: 7554
+Page 126 length: 6139
+Page 127 length: 6368
+Page 128 length: 4576
+Page 129 length: 6431
+Page 130 length: 8002
+Page 131 length: 9283
+Page 132 length: 6695
+Page 133 length: 9786
+Page 134 length: 10137
+Page 135 length: 9352
+Page 136 length: 9779
+Page 137 length: 11197
+Page 138 length: 13115
+Page 139 length: 12724
+Page 140 length: 12578
+Page 141 length: 12342
+Page 142 length: 5620
+Page 143 length: 5218
+Page 144 length: 2234
+Page 145 length: 374
+Detected doc type:  annual_report
+Keyword count: 12
+Filtered text length: 47
+Failed to process data/sample_annual_report.pdf: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.3-70b-versatile` in organization `org_01kdb2wvrpexzt55e1yyhd1qse` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Requested 93907, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Page 0 length: 1252
+Detected doc type:  legal_notice
+Keyword count: 10
+Filtered text length: 1
+Page 0 length: 1585
+Detected doc type:  sanction_letter
+Keyword count: 10
+Filtered text length: 1
+Failed to process data/sample_sanction_letter.pdf: unhashable type: 'dict'
+
+--- FINAL INGESTION OUTPUT ---
+
+{
+  "unstructured_signals": {
+    "legal_notice": [
+      {
+        "default_events": [
+          {
+            "description": "Failure to make timely repayment as per loan agreement",
+            "source": "legal_notice"
+          },
+          {
+            "description": "Failure to repay outstanding principal amount of \u20b94,75,00,000 along with accrued interest",
+            "source": "legal_notice"
+          }
+        ],
+        "insolvency_references": [
+          {
+            "description": "Proceedings before the National Company Law Tribunal (NCLT)",
+            "source": "legal_notice"
+          },
+          {
+            "description": "Insolvency and Bankruptcy Code",
+            "source": "legal_notice"
+          }
+        ],
+        "arbitration_disputes": [
+          {
+            "description": "Dispute resolution clause of the loan agreement",
+            "source": "legal_notice"
+          }
+        ]
+      }
+    ]
+  },
+  "structured_signals": {
+    "structured_financial_analysis": {
+      "financial_summary": {
+        "gst_sales": 2000000,
+        "bank_inflows": 1700000,
+        "itr_income": 900000
+      },
+      "circular_trading": {
+        "circular_trading_detected": true,
+        "cycles": [
+          [
+            "27CCC3333C1Z3",
+            "27AAA1111A1Z1",
+            "27BBB2222B1Z2"
+          ]
+        ]
+      },
+      "revenue_mismatch": {
+        "gst_sales": 2000000,
+        "bank_inflows": 1700000,
+        "ratio": 0.85,
+        "revenue_inflation_flag": false
+      },
+      "income_consistency": {
+        "gst_sales": 2000000,
+        "itr_income": 900000,
+        "income_ratio": 0.45,
+        "income_inconsistency_flag": false
+      },
+      "risk_summary": {
+        "circular_trading_risk": true,
+        "revenue_mismatch_risk": false,
+        "income_inconsistency_risk": false
+      }
+    }
+  }
+}
