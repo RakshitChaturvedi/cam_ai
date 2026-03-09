@@ -18,6 +18,7 @@ Extract early warning signals from this annual report.
 
 Return JSON with:
 
+- entity_resolution
 - contingent_liabilities
 - capital_commitments
 - corporate_guarantees
@@ -26,6 +27,8 @@ Return JSON with:
 - debt_covenants
 - impairments
 - receivable_aging_risks
+
+Mandatory: `entity_resolution` must be a single JSON object containing company_name, registration_number, incorporation_date, and key_directors if found.
 
 Text:
 {text}
@@ -38,12 +41,15 @@ Extract legal financial risks.
 
 Return JSON with:
 
+- entity_resolution
 - default_events
 - insolvency_references
 - section_138_cases
 - arbitration_disputes
 - liquidated_damages
 - garnishee_orders
+
+Mandatory: `entity_resolution` must be a single JSON object containing company_name, registration_number, incorporation_date, and key_directors if found.
 
 Text:
 {text}
@@ -56,6 +62,7 @@ Extract loan covenant risks.
 
 Return JSON with:
 
+- entity_resolution
 - financial_covenants
 - cross_default_clauses
 - material_adverse_change
@@ -63,11 +70,13 @@ Return JSON with:
 - promoter_guarantee
 - negative_lien
 
+Mandatory: `entity_resolution` must be a single JSON object containing company_name, registration_number, incorporation_date, and key_directors if found.
+
 Text:
 {text}
 """
 
-    return f"Extract financial risks from text: {text}"
+    return f"Extract financial risks and a mandatory `entity_resolution` object (keys: company_name, registration_number, incorporation_date, key_directors) from text: {text}"
 
 
 def extract_signals_from_chunk(chunk, doc_type):

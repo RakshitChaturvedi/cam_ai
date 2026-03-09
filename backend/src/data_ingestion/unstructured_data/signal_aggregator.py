@@ -16,7 +16,10 @@ def aggregate_signals(results):
             else:
                 aggregated[key].append(value)
         
-        for key in aggregated:
+    for key in aggregated:
+        try:
             aggregated[key] = list(set(aggregated[key]))
-        
-        return aggregated
+        except TypeError:
+            pass
+            
+    return aggregated
