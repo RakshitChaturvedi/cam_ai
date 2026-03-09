@@ -17,34 +17,8 @@ function App() {
   const fetchAnalysisData = async () => {
     setIsLoading(true);
     try {
-      // In a real app, this would be an actual API call to the Python backend
-      // `const response = await axios.get('http://localhost:8000/api/analyze');`
-      // For now, we simulate backend delay and load the mock structure
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Mock data mirroring the Python output
-      const mockBackendResponse = {
-        unstructured_signals: {
-          sentiment: [{ signal: "Positive overall sentiment", source: "Annual Report" }],
-          legal_disputes: [],
-          promoter_guarantee: [{ description: "Personal guarantee provided", source: "Sanction Letter" }]
-        },
-        structured_signals: {
-          structured_financial_analysis: {
-            financial_summary: { gst_sales: 2000000, bank_inflows: 1700000, itr_income: 900000 },
-            circular_trading: { circular_trading_detected: true },
-            revenue_mismatch: { ratio: 0.85, revenue_inflation_flag: false },
-            income_consistency: { income_ratio: 0.45, income_inconsistency_flag: false },
-            risk_summary: {
-              circular_trading_risk: true,
-              revenue_mismatch_risk: false,
-              income_inconsistency_risk: false
-            }
-          }
-        }
-      };
-
-      setApiData(mockBackendResponse);
+      const response = await axios.get('http://localhost:8000/api/analyze');
+      setApiData(response.data);
       setIsProcessingComplete(true);
       setActiveTab('dashboard');
     } catch (err) {
