@@ -18,7 +18,9 @@ Extract early warning signals from this annual report.
 
 Return JSON with:
 
-- entity_resolution
+- entity_details
+- promoter_details
+- temporal_context
 - contingent_liabilities
 - capital_commitments
 - corporate_guarantees
@@ -28,7 +30,7 @@ Return JSON with:
 - impairments
 - receivable_aging_risks
 
-Mandatory: `entity_resolution` must be a single JSON object containing company_name, registration_number, incorporation_date, and key_directors if found.
+Mandatory: `entity_details` must be an object with keys: company_name, company_pan, cin, nic_code, pin_code. `promoter_details` must be a list of objects with keys: name, din, pan. `temporal_context` must be an object with keys: target_fy, start_date, end_date.
 
 Text:
 {text}
@@ -41,7 +43,9 @@ Extract legal financial risks.
 
 Return JSON with:
 
-- entity_resolution
+- entity_details
+- promoter_details
+- temporal_context
 - default_events
 - insolvency_references
 - section_138_cases
@@ -49,7 +53,7 @@ Return JSON with:
 - liquidated_damages
 - garnishee_orders
 
-Mandatory: `entity_resolution` must be a single JSON object containing company_name, registration_number, incorporation_date, and key_directors if found.
+Mandatory: `entity_details` must be an object with keys: company_name, company_pan, cin, nic_code, pin_code. `promoter_details` must be a list of objects with keys: name, din, pan. `temporal_context` must be an object with keys: target_fy, start_date, end_date.
 
 Text:
 {text}
@@ -62,7 +66,9 @@ Extract loan covenant risks.
 
 Return JSON with:
 
-- entity_resolution
+- entity_details
+- promoter_details
+- temporal_context
 - financial_covenants
 - cross_default_clauses
 - material_adverse_change
@@ -70,13 +76,13 @@ Return JSON with:
 - promoter_guarantee
 - negative_lien
 
-Mandatory: `entity_resolution` must be a single JSON object containing company_name, registration_number, incorporation_date, and key_directors if found.
+Mandatory: `entity_details` must be an object with keys: company_name, company_pan, cin, nic_code, pin_code. `promoter_details` must be a list of objects with keys: name, din, pan. `temporal_context` must be an object with keys: target_fy, start_date, end_date.
 
 Text:
 {text}
 """
 
-    return f"Extract financial risks and a mandatory `entity_resolution` object (keys: company_name, registration_number, incorporation_date, key_directors) from text: {text}"
+    return f"Extract financial risks and a mandatory `entity_details`, `promoter_details`, and `temporal_context` object from text in JSON format: {text}"
 
 
 def extract_signals_from_chunk(chunk, doc_type):
