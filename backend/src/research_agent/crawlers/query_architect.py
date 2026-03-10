@@ -1,10 +1,11 @@
 import json
 import os
+from pathlib import Path
 from groq import Groq
 from typing import Dict, Any
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path=Path(__file__).resolve().parents[4] / ".env")
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
@@ -81,7 +82,7 @@ def construct_queries(payload_metadata: Dict[str, Any]) -> Dict[str, str]:
         
         try:
             completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="llama-3.1-8b-instant",
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )

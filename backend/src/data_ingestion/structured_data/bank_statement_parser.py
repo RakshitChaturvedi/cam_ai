@@ -1,6 +1,8 @@
 import pandas as pd
 
 def parse_bank_statement(file_path):
+    if not file_path:
+        return []
     df = pd.read_csv(file_path)
     df.columns = [c.lower().strip() for c in df.columns]
 

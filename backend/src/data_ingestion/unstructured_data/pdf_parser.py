@@ -55,11 +55,18 @@ def filter_relevant_pages(pages, doc_type):
 
     return relevant_text
 
-def chunk_text(text, max_chunks = 6):
+def chunk_text(text_list, max_chunks = 3):
     """
         Split text into chunks for LLM processing.
+        text_list can be a list of page texts or a single string.
     """
-    chunk_size = 4000
+    if isinstance(text_list, list):
+        text = "\n".join(text_list)
+    else:
+        text = text_list
+    
+    # Use smaller chunks to stay within Groq free tier TPM limits
+    chunk_size = 2000
     chunks = []
     start = 0
     
@@ -73,7 +80,7 @@ def parse_pdf(pdf_path):
     pages = extract_text_from_pdf(pdf_path)
     doc_type = detect_document_type(pages)
     filtered_text = filter_relevant_pages(pages, doc_type)
-    print("Filtered text length:", len(filtered_text))
+    print("Filtered text length:", len(filtered_text), "pages")
     
     chunks = chunk_text(filtered_text)
     results = []

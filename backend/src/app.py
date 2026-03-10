@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
+import os
+import shutil
 from pydantic import BaseModel
 
 # Import our backend logical pipelines
@@ -19,20 +21,65 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+UPLOAD_DIR = "data/uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 @app.get("/")
 def read_root():
     return {"status": "ok", "message": "CAM AI Backend is running."}
 
-@app.get("/api/analyze")
-async def execute_credit_analysis():
+@app.post("/api/analyze")
+async def execute_credit_analysis(
+    annual_report: UploadFile = File(None),
+    legal_notice: UploadFile = File(None),
+    sanction_letter: UploadFile = File(None),
+    gst: UploadFile = File(None),
+    bank: UploadFile = File(None),
+    itr: UploadFile = File(None)
+):
     """
     Executes the entire backend pipeline and returns the consolidated JSON
     to the React frontend.
     """
     print("\n[API] Processing Analysis Request...")
     
+    unstructured_files = []
+    structured_files = {}
+
+    def save_upload(upload_file: UploadFile):
+        if not upload_file:
+            return None
+        filepath = os.path.join(UPLOAD_DIR, upload_file.filename)
+        with open(filepath, "wb") as buffer:
+            shutil.copyfileobj(upload_file.file, buffer)
+        return filepath
+
+    # Handle unstructured
+    ar_path = save_upload(annual_report)
+    ln_path = save_upload(legal_notice)
+    sl_path = save_upload(sanction_letter)
+    
+    if ar_path: unstructured_files.append(ar_path)
+    if ln_path: unstructured_files.append(ln_path)
+    if sl_path: unstructured_files.append(sl_path)
+    
+    if not unstructured_files:
+        unstructured_files = None
+
+    # Handle structured
+    gst_path = save_upload(gst)
+    bank_path = save_upload(bank)
+    itr_path = save_upload(itr)
+    
+    if gst_path: structured_files["gst"] = gst_path
+    if bank_path: structured_files["bank"] = bank_path
+    if itr_path: structured_files["itr"] = itr_path
+    
+    if not structured_files:
+        structured_files = None
+
     # 1. Run the Data Ingestion (Pillar 1)
-    crawler_payload, original_payload = run_ingestion()
+    crawler_payload, original_payload = run_ingestion(unstructured_files, structured_files)
     
     # Extract the structured and unstructured pieces for the orchestrator
     structured_json = original_payload.get("structured_signals", {})

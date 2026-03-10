@@ -1,9 +1,10 @@
 import os
 import json
+from pathlib import Path
 from groq import Groq
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path=Path(__file__).resolve().parents[4] / ".env")
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def verify_findings(context: str, generated_claim: str) -> str:
@@ -33,7 +34,7 @@ Output ONLY the JSON object.
     
     try:
         completion = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"}
         )

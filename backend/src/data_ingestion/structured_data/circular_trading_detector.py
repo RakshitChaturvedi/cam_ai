@@ -1,6 +1,12 @@
 import networkx as nx
 
 def detect_circular_trading(gst_records):
+    if not gst_records:
+        return {
+            "circular_trading_detected": False,
+            "cycles": [],
+            "not_analyzed": True
+        }
     graph = nx.DiGraph()
 
     for record in gst_records:

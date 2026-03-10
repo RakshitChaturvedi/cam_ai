@@ -1,13 +1,14 @@
 import os
 import json
 import asyncio
+from pathlib import Path
 from typing import Dict, Any, List
 from groq import Groq
 from dotenv import load_dotenv
 
 from research_agent.recommendation_engine.prompt_permutations import get_prompts
 
-load_dotenv()
+load_dotenv(dotenv_path=Path(__file__).resolve().parents[4] / ".env")
 
 # We will simulate the Ensemble purely through Groq's multi-model catalog to ensure $0 cost and speed,
 # but architecturally this represents Llama vs Gemini vs DeepSeek.
@@ -16,9 +17,9 @@ groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 # If you configure Gemini or OpenRouter, add the logic below, otherwise fallback to Groq models
 # to guarantee the script runs right out of the box.
 MODELS = [
-    "llama-3.3-70b-versatile", # Simulating Model 1 (e.g., The Heavy Reasoner)
-    "llama-3.1-8b-instant",    # Simulating Model 2 (e.g., The Fast Classifier)
-    "gemma2-9b-it"             # Simulating Model 3 (e.g., The MoE Arbitrator)
+    "meta-llama/llama-4-scout-17b-16e-instruct",  # Model 1: The Heavy Reasoner
+    "llama-3.1-8b-instant",                        # Model 2: The Fast Classifier
+    "qwen/qwen3-32b"                               # Model 3: The MoE Arbitrator
 ]
 
 async def _fetch_llm_decision(prompt_name: str, system_prompt: str, model_name: str, context_str: str) -> dict:

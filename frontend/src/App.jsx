@@ -1,28 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { LayoutDashboard, FileText, CheckSquare, Activity, Loader2 } from 'lucide-react';
+import { LayoutDashboard, FileText, CheckSquare, Activity, Loader2, UploadCloud } from 'lucide-react';
+import FileUpload from './components/processing/FileUpload';
 import ProcessingFlow from './components/processing/ProcessingFlow';
 import Dashboard from './components/dashboard/Dashboard';
 import CAMSummary from './components/cam/CAMSummary';
 import RecommendationPanel from './components/recommendation/RecommendationPanel';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('processing');
+  const [activeTab, setActiveTab] = useState('upload');
   const [apiData, setApiData] = useState(null);
+  const [uploadFiles, setUploadFiles] = useState(null);
   const [isProcessingComplete, setIsProcessingComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const handleUploadComplete = (files) => {
+    setUploadFiles(files);
+    setActiveTab('processing');
+  };
 
   // Simulate fetching data from Python backend
   const fetchAnalysisData = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:8000/api/analyze');
+      const formData = new FormData();
+      if (uploadFiles) {
+        Object.keys(uploadFiles).forEach(key => {
+          if (uploadFiles[key]) {
+            formData.append(key, uploadFiles[key]);
+          }
+        });
+      }
+
+      const response = await axios.post('http://localhost:8000/api/analyze', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       setApiData(response.data);
       setIsProcessingComplete(true);
       setActiveTab('dashboard');
     } catch (err) {
-      setError('Failed to connect to backend engine.');
+      setError('Failed to connect to backend engine. Is the backend running?');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -30,7 +50,8 @@ function App() {
   };
 
   const navItems = [
-    { id: 'processing', label: 'Processing', icon: Activity },
+    { id: 'upload', label: 'Upload Documents', icon: UploadCloud },
+    { id: 'processing', label: 'Processing', icon: Activity, disabled: activeTab === 'upload' },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, disabled: !isProcessingComplete },
     { id: 'cam', label: 'CAM Summary', icon: FileText, disabled: !isProcessingComplete },
     { id: 'decision', label: 'Decision', icon: CheckSquare, disabled: !isProcessingComplete },
@@ -90,6 +111,8 @@ function App() {
 
         {/* Tab Content Rendering */}
         <div className="transition-all duration-300">
+          {activeTab === 'upload' && <FileUpload onUploadComplete={handleUploadComplete} />}
+
           {activeTab === 'processing' && (
             <div className="flex flex-col items-center">
               <ProcessingFlow onComplete={fetchAnalysisData} />

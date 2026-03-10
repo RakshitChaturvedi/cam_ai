@@ -1,4 +1,12 @@
 def check_income_consistency(gst_records, itr_records):
+    if not gst_records and not itr_records:
+        return {
+            "gst_sales": 0,
+            "itr_income": 0,
+            "income_ratio": 0,
+            "income_inconsistency_flag": False,
+            "not_analyzed": True
+        }
     gst_sales = sum(record.get("amount", 0) for record in gst_records)
     itr_income = 0
 
