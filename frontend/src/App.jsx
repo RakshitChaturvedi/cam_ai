@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { LayoutDashboard, FileText, CheckSquare, Activity, Loader2, UploadCloud } from 'lucide-react';
+import { LayoutDashboard, FileText, CheckSquare, Activity, Loader2, UploadCloud, UserPen } from 'lucide-react';
 import FileUpload from './components/processing/FileUpload';
 import ProcessingFlow from './components/processing/ProcessingFlow';
+import HITLPortal from './components/hitl/HITLPortal';
 import Dashboard from './components/dashboard/Dashboard';
 import CAMSummary from './components/cam/CAMSummary';
 import RecommendationPanel from './components/recommendation/RecommendationPanel';
@@ -16,16 +17,22 @@ function App() {
   const [error, setError] = useState(null);
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
   const [isApiComplete, setIsApiComplete] = useState(false);
+  const [hitlData, setHitlData] = useState(null);
 
   const handleUploadComplete = (files) => {
     setUploadFiles(files);
+    setActiveTab('hitl');
+  };
+
+  const handleHITLComplete = (hitlResult) => {
+    setHitlData(hitlResult);
     setActiveTab('processing');
     // Fire the API call immediately in parallel with the animation
-    fireAnalysis(files);
+    fireAnalysis(uploadFiles, hitlResult);
   };
 
   // Fire the backend analysis immediately (runs in parallel with animation)
-  const fireAnalysis = async (files) => {
+  const fireAnalysis = async (files, hitl) => {
     setIsLoading(true);
     setIsApiComplete(false);
     setIsAnimationComplete(false);
@@ -38,6 +45,11 @@ function App() {
             formData.append(key, files[key]);
           }
         });
+      }
+
+      // Append HITL data as JSON string if available
+      if (hitl) {
+        formData.append('hitl_data', JSON.stringify(hitl));
       }
 
       const response = await axios.post('http://localhost:8000/api/analyze', formData, {
@@ -68,8 +80,9 @@ function App() {
   }, [isAnimationComplete, isApiComplete, activeTab]);
 
   const navItems = [
-    { id: 'upload', label: 'Upload Documents', icon: UploadCloud },
-    { id: 'processing', label: 'Processing', icon: Activity, disabled: activeTab === 'upload' },
+    { id: 'upload', label: 'Upload', icon: UploadCloud },
+    { id: 'hitl', label: 'HITL Portal', icon: UserPen, disabled: !uploadFiles },
+    { id: 'processing', label: 'Processing', icon: Activity, disabled: activeTab === 'upload' || activeTab === 'hitl' },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, disabled: !isProcessingComplete },
     { id: 'cam', label: 'CAM Summary', icon: FileText, disabled: !isProcessingComplete },
     { id: 'decision', label: 'Decision', icon: CheckSquare, disabled: !isProcessingComplete },
@@ -130,6 +143,10 @@ function App() {
         {/* Tab Content Rendering */}
         <div className="transition-all duration-300">
           {activeTab === 'upload' && <FileUpload onUploadComplete={handleUploadComplete} />}
+
+          {activeTab === 'hitl' && (
+            <HITLPortal uploadedFiles={uploadFiles} onComplete={handleHITLComplete} />
+          )}
 
           {activeTab === 'processing' && (
             <div className="flex flex-col items-center">
