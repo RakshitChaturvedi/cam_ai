@@ -2,17 +2,17 @@ import json
 import asyncio
 
 # --- CRAWLER IMPORTS ---
-from crawlers.payload_receiver import validate_payload
-from crawlers.query_architect import construct_queries
-from crawlers.engines import litigation, promoter, sector_risk
-from crawlers.data_normalizer import clean_and_tag
+from research_agent.crawlers.payload_receiver import validate_payload
+from research_agent.crawlers.query_architect import construct_queries
+from research_agent.crawlers.engines import litigation, promoter, sector_risk
+from research_agent.crawlers.data_normalizer import clean_and_tag
 
 # --- RAG PIPELINE IMPORTS ---
-from rag_pipeline.finmm_editor import correct_ocr_hallucinations
-from rag_pipeline.spatial_chunker import chunk_document
-from rag_pipeline.embedding_db import LocalVectorDB
-from rag_pipeline.modular_retriever import iterative_search
-from rag_pipeline.refine_verifier import verify_findings
+from research_agent.rag_pipeline.finmm_editor import correct_ocr_hallucinations
+from research_agent.rag_pipeline.spatial_chunker import chunk_document
+from research_agent.rag_pipeline.embedding_db import LocalVectorDB
+from research_agent.rag_pipeline.modular_retriever import iterative_search
+from research_agent.rag_pipeline.refine_verifier import verify_findings
 
 
 async def main():

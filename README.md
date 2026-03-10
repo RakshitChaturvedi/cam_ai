@@ -149,19 +149,38 @@ data/
 
 ---
 
-# 7. Running the System
+# 7. Running the Full Application (Backend + Frontend)
 
-Navigate to the source folder:
+The system now features a fully integrated React Frontend connecting to a FastAPI Python Backend running the ML Ensemble Pipeline.
+
+You will need **TWO terminal windows** open to run this.
+
+### Terminal 1: Start the Python Backend
+Navigate to the `backend/src` folder and start the FastAPI server using Uvicorn:
 
 ```bash
 cd backend/src
-```
 
-Run the main pipeline:
+# Linux / macOS
+export PYTHONPATH="."
+python -m uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+
+# Windows (PowerShell)
+$env:PYTHONPATH="."
+python -m uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+```
+*Wait until you see `Uvicorn running on http://0.0.0.0:8000` before starting the frontend.*
+
+### Terminal 2: Start the React Frontend
+Open a new terminal, navigate to the `frontend` folder, and start the Vite development server:
 
 ```bash
-python main.py
+cd frontend
+npm install   # If running for the first time
+npm run dev
 ```
+
+The application will now be live! Open your browser to `http://localhost:5173/` and click **"Start Processing"** to execute the real AI pipeline.
 
 ---
 
