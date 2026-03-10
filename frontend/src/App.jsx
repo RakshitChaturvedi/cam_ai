@@ -14,21 +14,28 @@ function App() {
   const [isProcessingComplete, setIsProcessingComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const [isApiComplete, setIsApiComplete] = useState(false);
 
   const handleUploadComplete = (files) => {
     setUploadFiles(files);
     setActiveTab('processing');
+    // Fire the API call immediately in parallel with the animation
+    fireAnalysis(files);
   };
 
-  // Simulate fetching data from Python backend
-  const fetchAnalysisData = async () => {
+  // Fire the backend analysis immediately (runs in parallel with animation)
+  const fireAnalysis = async (files) => {
     setIsLoading(true);
+    setIsApiComplete(false);
+    setIsAnimationComplete(false);
+    setError(null);
     try {
       const formData = new FormData();
-      if (uploadFiles) {
-        Object.keys(uploadFiles).forEach(key => {
-          if (uploadFiles[key]) {
-            formData.append(key, uploadFiles[key]);
+      if (files) {
+        Object.keys(files).forEach(key => {
+          if (files[key]) {
+            formData.append(key, files[key]);
           }
         });
       }
@@ -39,8 +46,8 @@ function App() {
         }
       });
       setApiData(response.data);
+      setIsApiComplete(true);
       setIsProcessingComplete(true);
-      setActiveTab('dashboard');
     } catch (err) {
       setError('Failed to connect to backend engine. Is the backend running?');
       console.error(err);
@@ -48,6 +55,17 @@ function App() {
       setIsLoading(false);
     }
   };
+
+  const handleAnimationComplete = () => {
+    setIsAnimationComplete(true);
+  };
+
+  // Navigate to dashboard only when BOTH animation and API are done
+  useEffect(() => {
+    if (isAnimationComplete && isApiComplete && activeTab === 'processing') {
+      setActiveTab('dashboard');
+    }
+  }, [isAnimationComplete, isApiComplete, activeTab]);
 
   const navItems = [
     { id: 'upload', label: 'Upload Documents', icon: UploadCloud },
@@ -115,11 +133,11 @@ function App() {
 
           {activeTab === 'processing' && (
             <div className="flex flex-col items-center">
-              <ProcessingFlow onComplete={fetchAnalysisData} />
-              {isLoading && (
+              <ProcessingFlow onComplete={handleAnimationComplete} />
+              {isAnimationComplete && isLoading && (
                 <div className="mt-8 flex flex-col items-center text-primary-600">
                   <Loader2 className="w-8 h-8 animate-spin mb-2" />
-                  <span className="font-medium">Connecting to Analysis Engine...</span>
+                  <span className="font-medium">Finalizing analysis, please wait...</span>
                 </div>
               )}
             </div>
