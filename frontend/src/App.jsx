@@ -1,36 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { LayoutDashboard, FileText, CheckSquare, Activity, Loader2 } from 'lucide-react';
+import { LayoutDashboard, FileText, CheckSquare, Activity, Loader2, UploadCloud, UserPen } from 'lucide-react';
+import FileUpload from './components/processing/FileUpload';
 import ProcessingFlow from './components/processing/ProcessingFlow';
+import HITLPortal from './components/hitl/HITLPortal';
 import Dashboard from './components/dashboard/Dashboard';
 import CAMSummary from './components/cam/CAMSummary';
 import RecommendationPanel from './components/recommendation/RecommendationPanel';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('processing');
+  const [activeTab, setActiveTab] = useState('upload');
   const [apiData, setApiData] = useState(null);
+  const [uploadFiles, setUploadFiles] = useState(null);
   const [isProcessingComplete, setIsProcessingComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const [isApiComplete, setIsApiComplete] = useState(false);
+  const [hitlData, setHitlData] = useState(null);
 
-  // Simulate fetching data from Python backend
-  const fetchAnalysisData = async () => {
+  const handleUploadComplete = (files) => {
+    setUploadFiles(files);
+    setActiveTab('hitl');
+  };
+
+  const handleHITLComplete = (hitlResult) => {
+    setHitlData(hitlResult);
+    setActiveTab('processing');
+    // Fire the API call immediately in parallel with the animation
+    fireAnalysis(uploadFiles, hitlResult);
+  };
+
+  // Fire the backend analysis immediately (runs in parallel with animation)
+  const fireAnalysis = async (files, hitl) => {
     setIsLoading(true);
+    setIsApiComplete(false);
+    setIsAnimationComplete(false);
+    setError(null);
     try {
-      const response = await axios.get('http://localhost:8000/api/analyze');
+      const formData = new FormData();
+      if (files) {
+        Object.keys(files).forEach(key => {
+          if (files[key]) {
+            formData.append(key, files[key]);
+          }
+        });
+      }
+
+      // Append HITL data as JSON string if available
+      if (hitl) {
+        formData.append('hitl_data', JSON.stringify(hitl));
+      }
+
+      const response = await axios.post('http://localhost:8000/api/analyze', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       setApiData(response.data);
+      setIsApiComplete(true);
       setIsProcessingComplete(true);
-      setActiveTab('dashboard');
     } catch (err) {
-      setError('Failed to connect to backend engine.');
+      setError('Failed to connect to backend engine. Is the backend running?');
       console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleAnimationComplete = () => {
+    setIsAnimationComplete(true);
+  };
+
+  // Navigate to dashboard only when BOTH animation and API are done
+  useEffect(() => {
+    if (isAnimationComplete && isApiComplete && activeTab === 'processing') {
+      setActiveTab('dashboard');
+    }
+  }, [isAnimationComplete, isApiComplete, activeTab]);
+
   const navItems = [
-    { id: 'processing', label: 'Processing', icon: Activity },
+    { id: 'upload', label: 'Upload', icon: UploadCloud },
+    { id: 'hitl', label: 'HITL Portal', icon: UserPen, disabled: !uploadFiles },
+    { id: 'processing', label: 'Processing', icon: Activity, disabled: activeTab === 'upload' || activeTab === 'hitl' },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, disabled: !isProcessingComplete },
     { id: 'cam', label: 'CAM Summary', icon: FileText, disabled: !isProcessingComplete },
     { id: 'decision', label: 'Decision', icon: CheckSquare, disabled: !isProcessingComplete },
@@ -90,13 +142,19 @@ function App() {
 
         {/* Tab Content Rendering */}
         <div className="transition-all duration-300">
+          {activeTab === 'upload' && <FileUpload onUploadComplete={handleUploadComplete} />}
+
+          {activeTab === 'hitl' && (
+            <HITLPortal uploadedFiles={uploadFiles} onComplete={handleHITLComplete} />
+          )}
+
           {activeTab === 'processing' && (
             <div className="flex flex-col items-center">
-              <ProcessingFlow onComplete={fetchAnalysisData} />
-              {isLoading && (
+              <ProcessingFlow onComplete={handleAnimationComplete} />
+              {isAnimationComplete && isLoading && (
                 <div className="mt-8 flex flex-col items-center text-primary-600">
                   <Loader2 className="w-8 h-8 animate-spin mb-2" />
-                  <span className="font-medium">Connecting to Analysis Engine...</span>
+                  <span className="font-medium">Finalizing analysis, please wait...</span>
                 </div>
               )}
             </div>

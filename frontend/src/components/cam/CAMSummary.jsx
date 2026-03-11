@@ -2,12 +2,8 @@ import React from 'react';
 import { User, Briefcase, Building2, Shield, AlertTriangle } from 'lucide-react';
 
 const CAMSummary = ({ data }) => {
-    // Use mock data if not provided via API
-    const signals = data?.unstructured_signals || {
-        sentiment: [{ signal: "Positive overall sentiment in management discussion", source: "Annual Report" }],
-        legal_disputes: [{ description: "Pending litigation defensively positioned", source: "Legal Notice" }],
-        promoter_guarantee: [{ description: "Personal guarantee provided by promoters", source: "Sanction Letter" }]
-    };
+    if (!data || !data.unstructured_signals) return null;
+    const signals = data.unstructured_signals;
 
     const sections = [
         {

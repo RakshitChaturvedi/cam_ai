@@ -3,19 +3,13 @@ from data_ingestion.structured_data.document_processor_structured import process
 
 import json
 
-def run_ingestion():
-    unstructured_files = [
-        "data/sample_annual_report.pdf",
-        "data/sample_legal_notice.pdf",
-        "data/sample_sanction_letter.pdf"
-    ]
+def run_ingestion(unstructured_files=None, structured_files=None):
+    if unstructured_files is None:
+        unstructured_files = []
     unstructured_results = process_documents(unstructured_files)
 
-    structured_files = {
-        "gst":  "data/sample_gst.csv",
-        "bank": "data/sample_bank.csv",
-        "itr": "data/sample_itr.csv"
-    }
+    if structured_files is None:
+        structured_files = {}
     structured_results = process_structured_documents(structured_files)
 
     best_entity_details = {}
